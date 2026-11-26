@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">AMAN X</string>
+    <string name="notification_listener_service_name">AMAN X Protection Monitor</string>
+</resources>
