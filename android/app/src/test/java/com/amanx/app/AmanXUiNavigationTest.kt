@@ -45,6 +45,7 @@ class AmanXUiNavigationTest {
         composeRule.onNodeWithText("English").performClick()
         composeRule.onNodeWithText("Welcome to AMAN X").assertIsDisplayed()
         composeRule.onNodeWithText("Continue to Security Setup").performClick()
+        composeRule.waitForIdle()
         assertTrue(advanced)
     }
 }
