@@ -6,6 +6,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import com.amanx.app.domain.model.AppLanguage
 import com.amanx.app.domain.model.ThemeMode
 import com.amanx.app.ui.screens.WelcomeOnboardingScreen
@@ -45,7 +46,9 @@ class AmanXUiNavigationTest {
         composeRule.onNodeWithText("مرحباً بك في AMAN X").assertIsDisplayed()
         composeRule.onNodeWithText("English").performClick()
         composeRule.onNodeWithText("Welcome to AMAN X").assertIsDisplayed()
-        composeRule.onNodeWithText("Continue to Security Setup").performClick()
+        composeRule.onNodeWithText("Continue to Security Setup")
+            .performScrollTo()
+            .performClick()
         composeRule.runOnIdle { assertTrue("Continue button must invoke onNext", advanced.get()) }
     }
 }
