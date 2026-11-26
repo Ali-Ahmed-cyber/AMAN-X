@@ -2,7 +2,7 @@ package com.amanx.app.data.security
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import android.util.Base64
+import java.util.Base64
 import java.security.KeyStore
 import java.security.MessageDigest
 import java.security.SecureRandom
@@ -71,12 +71,12 @@ class CryptoManager {
         val combined = ByteArray(iv.size + cipherBytes.size)
         System.arraycopy(iv, 0, combined, 0, iv.size)
         System.arraycopy(cipherBytes, 0, combined, iv.size, cipherBytes.size)
-        return Base64.encodeToString(combined, Base64.NO_WRAP)
+        return Base64.getEncoder().encodeToString(combined)
     }
 
     fun decryptString(encodedCipher: String): String {
         if (encodedCipher.isEmpty()) return ""
-        val combined = Base64.decode(encodedCipher, Base64.NO_WRAP)
+        val combined = Base64.getDecoder().decode(encodedCipher)
         require(combined.size > GCM_IV_BYTES) { "Invalid ciphertext payload" }
         val iv = combined.copyOfRange(0, GCM_IV_BYTES)
         val cipherBytes = combined.copyOfRange(GCM_IV_BYTES, combined.size)
@@ -115,14 +115,14 @@ class CryptoManager {
         val salt = ByteArray(16).also { secureRandom.nextBytes(it) }
         val derived = deriveKey(pinChars, salt, PBKDF2_ITERATIONS, 256)
         return PinDigest(
-            saltBase64 = Base64.encodeToString(salt, Base64.NO_WRAP),
-            hashBase64 = Base64.encodeToString(derived, Base64.NO_WRAP)
+            saltBase64 = Base64.getEncoder().encodeToString(salt),
+            hashBase64 = Base64.getEncoder().encodeToString(derived)
         )
     }
 
     fun verifyPin(pinChars: CharArray, saltBase64: String, expectedHashBase64: String): Boolean {
-        val salt = Base64.decode(saltBase64, Base64.NO_WRAP)
-        val expected = Base64.decode(expectedHashBase64, Base64.NO_WRAP)
+        val salt = Base64.getDecoder().decode(saltBase64)
+        val expected = Base64.getDecoder().decode(expectedHashBase64)
         val actual = deriveKey(pinChars, salt, PBKDF2_ITERATIONS, 256)
         return MessageDigest.isEqual(actual, expected)
     }
