@@ -55,6 +55,13 @@ android {
         unitTests {
             isIncludeAndroidResources = true
             isReturnDefaultValues = true
+            all {
+                systemProperty(
+                    "robolectric.dependency.repo.url",
+                    "https://maven-central.storage-download.googleapis.com/maven2"
+                )
+                systemProperty("robolectric.dependency.repo.id", "google-maven-central")
+            }
         }
     }
 
