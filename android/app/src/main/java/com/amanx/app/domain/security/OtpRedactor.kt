@@ -12,7 +12,7 @@ object OtpRedactor {
     )
 
     private val otpContextRegex = Regex(
-        pattern = "(?i)(otp|verification\\s*code|passcode|pin|password|cvv|رمز\\s*التحقق|رمز\\s*التفعيل|كود\\s*التحقق|الرقم\\s*السري|كلمة\\s*المرور|كلمة\\s*السر)\\s*[:\\-]?\\s*([0-9٠-٩]{4,8})"
+        pattern = "(?i)(otp|verification\\s*code|passcode|pin|password|cvv|رمز\\s*التحقق|رمز\\s*التفعيل|كود\\s*التحقق|الرقم\\s*السري|كلمة\\s*المرور|كلمة\\s*السر|(?:أرسل|ارسل|ابعث|شارك|زوّدني|زودني|أدخل|ادخل|اكتب)\\s+(?:لي\\s+)?(?:ال)?(?:رمز|كود)(?:\\s+(?:التحقق|التفعيل))?)\\s*[:\\-]?\\s*([0-9٠-٩]{4,8})"
     )
 
     private val reverseOtpContextRegex = Regex(

@@ -6,17 +6,21 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import com.amanx.app.domain.model.AppLanguage
 import com.amanx.app.domain.model.ThemeMode
 import com.amanx.app.ui.screens.WelcomeOnboardingScreen
 import com.amanx.app.ui.theme.AmanXTheme
 import org.junit.Assert.assertTrue
+import java.util.concurrent.atomic.AtomicBoolean
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
+@Config(application = TestAmanXApplication::class)
 class AmanXUiNavigationTest {
 
     @get:Rule
@@ -24,7 +28,7 @@ class AmanXUiNavigationTest {
 
     @Test
     fun welcomeScreen_togglesLanguageRtlLtrAndAdvances() {
-        var advanced = false
+        val advanced = AtomicBoolean(false)
 
         composeRule.setContent {
             var currentLang by androidx.compose.runtime.remember {
@@ -34,7 +38,7 @@ class AmanXUiNavigationTest {
                 WelcomeOnboardingScreen(
                     language = currentLang,
                     onLanguageChange = { currentLang = it },
-                    onNext = { advanced = true }
+                    onNext = { advanced.set(true) }
                 )
             }
         }
@@ -42,7 +46,9 @@ class AmanXUiNavigationTest {
         composeRule.onNodeWithText("مرحباً بك في AMAN X").assertIsDisplayed()
         composeRule.onNodeWithText("English").performClick()
         composeRule.onNodeWithText("Welcome to AMAN X").assertIsDisplayed()
-        composeRule.onNodeWithText("Continue to Security Setup").performClick()
-        assertTrue(advanced)
+        composeRule.onNodeWithText("Continue to Security Setup")
+            .performScrollTo()
+            .performClick()
+        composeRule.runOnIdle { assertTrue("Continue button must invoke onNext", advanced.get()) }
     }
 }
