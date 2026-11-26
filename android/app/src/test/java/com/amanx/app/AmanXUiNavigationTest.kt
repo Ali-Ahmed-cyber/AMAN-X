@@ -11,6 +11,7 @@ import com.amanx.app.domain.model.ThemeMode
 import com.amanx.app.ui.screens.WelcomeOnboardingScreen
 import com.amanx.app.ui.theme.AmanXTheme
 import org.junit.Assert.assertTrue
+import java.util.concurrent.atomic.AtomicBoolean
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,7 +27,7 @@ class AmanXUiNavigationTest {
 
     @Test
     fun welcomeScreen_togglesLanguageRtlLtrAndAdvances() {
-        var advanced = false
+        val advanced = AtomicBoolean(false)
 
         composeRule.setContent {
             var currentLang by androidx.compose.runtime.remember {
@@ -36,7 +37,7 @@ class AmanXUiNavigationTest {
                 WelcomeOnboardingScreen(
                     language = currentLang,
                     onLanguageChange = { currentLang = it },
-                    onNext = { advanced = true }
+                    onNext = { advanced.set(true) }
                 )
             }
         }
@@ -45,7 +46,6 @@ class AmanXUiNavigationTest {
         composeRule.onNodeWithText("English").performClick()
         composeRule.onNodeWithText("Welcome to AMAN X").assertIsDisplayed()
         composeRule.onNodeWithText("Continue to Security Setup").performClick()
-        composeRule.waitForIdle()
-        assertTrue(advanced)
+        composeRule.runOnIdle { assertTrue("Continue button must invoke onNext", advanced.get()) }
     }
 }
